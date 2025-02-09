@@ -2,10 +2,7 @@ import subprocess
 import json
 import requests 
 import pandas as pd
-def write_to_txt_file(data, file_name):
-    with open(file_name, "w") as file:
-        file.write(data)
-        
+       
         
 def lambda_handler(event,context):
     print("Event:", event)
@@ -18,5 +15,3 @@ def lambda_handler(event,context):
     print("done")
     
     
-if __name__ == "__main__":
-    lambda_handler(None,None)
