@@ -1,0 +1,22 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - echo "Install phase"
+      - pip install -r requirements.txt -t lib
+  build:
+    commands:
+      - echo "Build phase"
+      - cd lib
+      - zip -r ../function.zip .
+      - cd ..
+      - zip -g function.zip lambda_function.py
+      - aws s3 cp function.zip s3://$S3_BUCKET_NAME
+  post_build:
+    commands:
+      - echo "Post build phase"
+      - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET_NAME --s3-key function.zip
+      - aws lambda publish-version --function-name $LAMBDA_FUNCTION_NAME
+      - aws lambda update-alias --function-name $LAMBDA_FUNCTION_NAME --name $LAMBDA_ALIAS_NAME --function-version 1
